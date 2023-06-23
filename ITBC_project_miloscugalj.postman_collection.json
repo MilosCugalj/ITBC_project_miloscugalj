@@ -1,0 +1,443 @@
+{
+	"info": {
+		"_postman_id": "f3b04290-fc9b-4e0b-8f47-cb2e611cd661",
+		"name": "ITBC_project_miloscugalj",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26716454"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"userName\", pm.variables.replaceIn('{{$randomUserName}}'));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n  \"userName\": \"{{$randomUserName}}\",\r\n  \"password\": \"ARod812$\"\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/Account/v1/User",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"User"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"User authorized successfully.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"Leif_Pollich\",\r\n  \"password\": \"ARod812$\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/Account/v1/GenerateToken",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"GenerateToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"true\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkxlaWZfUG9sbGljaCIsInBhc3N3b3JkIjoiQVJvZDgxMiQiLCJpYXQiOjE2ODc1MjQ0NDl9.7E8Z2JfERSX_CYoafngw6IkaIuysT1vfJw_Nuy2QWYc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n  \"userName\": \"{{userName}}\",\r\n  \"password\": \"ARod812$\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/Account/v1/Authorized",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"Authorized"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"username\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/Account/v1/User/{{userID}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"User",
+						"{{userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List of books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"author\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/BookStore/v1/Books",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"BookStore",
+						"v1",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"isbn\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/BookStore/v1/Book?ISBN=9781449325862",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"BookStore",
+						"v1",
+						"Book"
+					],
+					"query": [
+						{
+							"key": "ISBN",
+							"value": "9781449325862"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Order book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\t\r\n\r\n{\r\n  \"userId\": \"{{userID}}\",\r\n  \"collectionOfIsbns\": [\r\n    {\r\n      \"isbn\": \"9781449325862\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/BookStore/v1/Books",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"BookStore",
+						"v1",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update an order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\t\r\n{\r\n  \"userId\": \"{{userID}}\",\r\n  \"isbn\": \"9781449337711\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/BookStore/v1/Books/9781449325862",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"BookStore",
+						"v1",
+						"Books",
+						"9781449325862"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://demoqa.com"
+		},
+		{
+			"key": "accessToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkxlaWZfUG9sbGljaCIsInBhc3N3b3JkIjoiQVJvZDgxMiQiLCJpYXQiOjE2ODc1MjQ0NDl9.7E8Z2JfERSX_CYoafngw6IkaIuysT1vfJw_Nuy2QWYc",
+			"type": "string"
+		},
+		{
+			"key": "userID",
+			"value": "321502a2-a168-4e7a-a74f-c0ca4cf4bddb",
+			"type": "string"
+		},
+		{
+			"key": "userName",
+			"value": "Leif_Pollich",
+			"type": "string"
+		}
+	]
+}
